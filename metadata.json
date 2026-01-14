@@ -1,0 +1,7 @@
+{
+  "name": "RedAI Creative Studio",
+  "description": "An AI-powered content creation tool for Xiaohongshu, generating high-quality posters and captions from text or product images with a modern, glassmorphic UI.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
