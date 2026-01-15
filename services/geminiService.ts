@@ -10,11 +10,11 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 export const generateXhsContent = async (prompt: string, base64Image?: string): Promise<GeneratedContent> => {
   // 1. Generate Text (Title, Caption, Tags)
   const textPrompt = `
-    Based on this input: "${prompt}", generate a high-engagement Xiaohongshu (Red) post.
-    The response must include:
-    - A catchy, clickbait title (use emojis, keep it short).
-    - A detailed caption (friendly, sharing-oriented, use line breaks and emojis).
-    - A list of 5 relevant trending hashtags.
+    基于以下输入： "${prompt}"，生成一个高互动率的小红书（Xiaohongshu/Red）帖子。
+    响应必须完全使用中文，并包含：
+    - 一个吸引人的标题（带表情符号，保持简短，点击诱饵风格）。
+    - 详细的正文（亲切、分享导向，使用换行符和大量表情符号，语气要像真实的用户）。
+    - 5个相关的热门话题标签。
   `;
 
   const textResponse = await ai.models.generateContent({
@@ -41,7 +41,8 @@ export const generateXhsContent = async (prompt: string, base64Image?: string): 
   // 2. Generate Image (Poster)
   const imagePrompt = `A high-quality, aesthetic Xiaohongshu style poster for: ${content.title}. 
     Style: Minimalist, bright lighting, soft shadows, vertical aspect ratio (3:4). 
-    If context suggests a product, show the product in an lifestyle setting.`;
+    The poster should look like a professional lifestyle photograph or a clean product shot suitable for social media.
+    Do not include any English text in the image unless it's a brand logo.`;
 
   const imageResponse = await ai.models.generateContent({
     model: 'gemini-2.5-flash-image',
@@ -73,7 +74,7 @@ export const generateXhsContent = async (prompt: string, base64Image?: string): 
  * Generates a list of creative writing prompts for user inspiration.
  */
 export const getInspirationPrompts = async (): Promise<string[]> => {
-  const prompt = "Generate 5 short, creative, and trending Xiaohongshu content ideas or prompts (in Chinese). Each should be a single sentence describing a scene or a topic like 'A minimalist home office setup' or 'A secret rooftop cafe in the city'.";
+  const prompt = "生成5个简短、创意且热门的小红书内容点子或提示词（纯中文）。每个点子应该是一句描述场景或主题的话，例如：'极简风居家办公桌面改造' 或 '城市里的秘密屋顶咖啡馆探店'。";
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { GeneratedContent } from '../types';
+import Button from './ui/Button';
 
 interface Props {
   content: GeneratedContent;
@@ -8,48 +9,68 @@ interface Props {
 }
 
 const PostPreview: React.FC<Props> = ({ content, onReset }) => {
+  const copyToClipboard = () => {
+    const fullText = `${content.title}\n\n${content.caption}\n\n${content.tags.map(t => `#${t}`).join(' ')}`;
+    navigator.clipboard.writeText(fullText);
+    alert("文案已成功复制到剪贴板！");
+  };
+
   return (
-    <div className="grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">智能生成配图</h3>
-        <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl bg-gray-100 relative group">
+    <div className="grid lg:grid-cols-2 gap-12">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">笔记海报预览</h3>
+          <span className="text-xs text-gray-400">比例 3:4</span>
+        </div>
+        <div className="aspect-[3/4] rounded-[32px] overflow-hidden shadow-2xl bg-gray-100 relative group border-4 border-white">
           {content.imageUrl ? (
             <img src={content.imageUrl} className="w-full h-full object-cover" alt="AI Generated" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">图片生成中...</div>
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+              <div className="animate-spin h-8 w-8 border-4 border-red-500 border-t-transparent rounded-full mb-4"></div>
+              图片生成中...
+            </div>
           )}
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <button className="bg-white/90 px-4 py-2 rounded-full font-bold text-gray-900 text-sm shadow-lg">下载原图</button>
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+            <button className="bg-white px-6 py-3 rounded-full font-bold text-gray-900 text-sm shadow-2xl hover:scale-105 transition-transform">
+              下载高清原图
+            </button>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col h-full">
-        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">智能文案</h3>
-        <div className="flex-1 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">{content.title}</h2>
-          <div className="flex-1 overflow-y-auto pr-2 space-y-4 text-gray-700 whitespace-pre-wrap text-sm leading-relaxed">
-            {content.caption}
-          </div>
-          <div className="mt-6 flex flex-wrap gap-2">
+        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">智能生成的文案</h3>
+        <div className="flex-1 bg-white/50 p-8 rounded-[32px] border border-white shadow-inner flex flex-col">
+          <input 
+            defaultValue={content.title}
+            className="text-2xl font-bold text-gray-900 mb-6 bg-transparent border-none focus:ring-0 w-full"
+            placeholder="笔记标题"
+          />
+          <textarea 
+            defaultValue={content.caption}
+            className="flex-1 overflow-y-auto pr-2 space-y-4 text-gray-700 whitespace-pre-wrap text-base leading-relaxed bg-transparent border-none focus:ring-0 resize-none"
+            placeholder="笔记正文..."
+          />
+          <div className="mt-8 pt-8 border-t border-gray-100/50 flex flex-wrap gap-2">
             {content.tags.map((tag, i) => (
-              <span key={i} className="text-blue-500 font-medium text-sm hover:underline cursor-pointer">
+              <span key={i} className="px-3 py-1 bg-blue-50 text-blue-600 font-bold text-xs rounded-full hover:bg-blue-100 cursor-pointer transition-colors">
                 #{tag}
               </span>
             ))}
           </div>
         </div>
         
-        <div className="mt-8 flex gap-4">
-          <button 
-            onClick={onReset}
-            className="flex-1 py-3 px-6 rounded-full border border-gray-200 font-bold text-gray-600 hover:bg-gray-50 transition-colors"
-          >
-            重新生成
-          </button>
-          <button className="flex-1 py-3 px-6 rounded-full xhs-red font-bold text-white shadow-lg shadow-red-100 hover:scale-[1.02] active:scale-[0.98] transition-all">
+        <div className="mt-10 flex gap-4">
+          <Button variant="secondary" className="flex-1" onClick={onReset}>
+            重新创作
+          </Button>
+          <Button variant="primary" className="flex-1" onClick={copyToClipboard}>
             复制全文
-          </button>
+            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+          </Button>
         </div>
       </div>
     </div>
